@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+<title>walk</title>
+<style>
+#holder {
+	width: 800px;
+	height: 600px;
+	margin: 0px auto;
+}
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script src="http://cloud.github.com/downloads/processing-js/processing-js/processing-1.3.6.min.js"></script>
+<script src="/nowjs/now.js"></script>
+
+<script>
+function disableDraggingFor(element) {
+  // this works for FireFox and WebKit in future according to http://help.dottoro.com/lhqsqbtn.php
+  element.draggable = false;
+  // this works for older web layout engines
+  element.onmousedown = function(event) {
+                event.preventDefault();
+                return false;
+              };
+}
+
+$(document).ready(function(){
+	disableDraggingFor($("#holder"));
+  //I have a local "now" variable that holds both information about this current instance and holds the server's instance. 'now.name' refers to THIS INSTANCE's name. Some of the fields in 'now' are local to me, while some of them are actually located in the server. The abstraction that now provides is to gloss over that previous fact, so you can write code that refers to the server with the same syntax as a local field.
+
+  now.name = prompt("What's your name?", "");
+
+  now.ready(function() {
+	console.log("now is ready!");
+	now.create();
+//	keys = mkl(window);
+//	setInterval("now.syncWorld()", 16);
+	ready = true;
+	Processing.instances[0].loop();
+  });
+
+});
+
+</script>
+</head>
+
+<body>
+	<div id="holder">
+	<script type="application/processing">
+
+void setup()
+{
+  size(800, 600);
+  console.log("Processing setup!");
+  noLoop();
+}
+
+void draw() {
+	background(millis() / 100.0);
+}
+	</script>
+	<canvas id="canvas" style="border:5px solid black;"></canvas>
+	</div>
+</body>
+</html>
