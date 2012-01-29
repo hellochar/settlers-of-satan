@@ -244,6 +244,10 @@ class Player {
 		this.name = name;
 	}
 
+	void points() {
+		return buildings.settlement + buildings.city*2;
+	}
+
 	//Acceptable values of btype are "settlement", "road", and "city"
 	void build(btype) {
 		console.log(name+" is building a "+btype+"!");
@@ -306,6 +310,7 @@ class Player {
 		for(var idx in res) {
 			resString += idx+": "+res[idx]+"\n";
 		}
+		resString += "\n\nPoints: "+points();
 		text(resString, 0, 0);
 		String bString = "";
 		for(var idx in buildings) {
@@ -359,14 +364,20 @@ void updatePlayer(name, attrs) {
 void setup() {
   console.log("Processing setup!");
   size(800, 600);
-  frameRate(3);
   noLoop();
 }
 
 void draw() {
-  colorMode(HSB);
-  background(millis() / 10f % 255, 128, 10);
-  colorMode(RGB);
+  if(!me()) return;
+  background(map(me().points(), 0, 10, 0, 124), 32, 32);
+  noFill(); stroke(255, 0, 0); strokeWeight(5); strokeJoin(ROUND);
+  beginShape();
+  for(int i = 0; i < 5; i++) {
+	float angle = -PI/2 + 2*TWO_PI/5*i;
+	vertex(width/2 + 200 * cos(angle), height/2 + 200*sin(angle));
+  }
+  endShape(CLOSE);
+  strokeWeight(1);
 
   textAlign(CENTER, TOP);
   textSize(20);
@@ -375,7 +386,6 @@ void draw() {
 
   stroke(255);
   textAlign(CENTER, CENTER);
-  line(width/2, 0, width/2, height);
   text("BUILD Settlement", width/4, height/2);
   text("TRADE", 3*width/4, height/2);
   textAlign(LEFT, TOP);
