@@ -15,13 +15,13 @@ class Face {
     public Face(Point centerPoint, int id) {
         center = centerPoint;
         float angle = (float) (2*Math.PI/3);      
-        for(int i = 0; i<6; i++) {
+        for(int i = 0; i<5; i++) {
             corners.add(i, new Corner(this.calculateCorner(center, angle)));
             angle += (float) (Math.PI/3);
         }
 
         angle = (float) (Math.PI/2);   
-        for(int i = 0; i<=6; i++) {
+        for(int i = 0; i<5; i++) {
             edges.add(i, new Edge(this.corners.get(i).centerPoint, calculateEdgeMidpoint(center, angle), this.corners.get(i + 1).centerPoint));
             angle += (float) (Math.PI/3);
         }

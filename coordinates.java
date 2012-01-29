@@ -19,14 +19,14 @@ public class coordinates {
             pointDict.put(Integer.toString(inner), new Point(2, angle));
             pointDict.put(Integer.toString(outer), new Point(4, angle));
 
-            angle -= Math.PI/12;
+            angle -= Math.PI/6;
             outer += 1;
 
             pointDict.put(Integer.toString(outer), new Point(angle));
 
             inner += 1;
             outer += 1;
-            angle -= Math.PI/12;
+            angle -= Math.PI/6;
         }
 
         return pointDict;
