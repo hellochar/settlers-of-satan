@@ -106,11 +106,10 @@ $(document).ready(function(){
 	app().loaded();
   });
 
-  now.updateBlock = function(players){
-  	console.log(players);
+  now.updateBlock = function(){
   	$("#playerscores").empty();
-  	for (var name in players) {
-  		var player = players[name];
+  	for (var thing in players) {
+  		var player = players[thing];
   		var playerdiv = $("<div></div>");
   		$("#playerscores").append(playerdiv);
   		playerdiv.text( player.name + ": " + player.res.sheep + " sheep, " + player.res.wheat + " wheat, " + player.res.ore + " ore, " + player.res.brick + " brick, " + player.res.wood + " wood in hand. ");/* + players[player].cards.victorypoints + " victory points, " + players[player].cards.knights + " knights, " + players[player].cards.monopolies + " monopolies, " + players[player].cards.yearofplenty + " years of plenty, " + players[player].cards.roadbuilding + " free road building. " + players[player].victorypoints + " victory points.");*/
@@ -154,7 +153,7 @@ function port(port) {
 </head>
 
 <body>
-<header>The <h1>Settlers</h1> of <h1>Catan</h1></header>
+<header>The <h1>Settlers</h1> of <h1>Satan</h1></header>
 <div id="chat">
 	<h3>Chat</h3>
 	<div id="msg"></div>
@@ -189,8 +188,8 @@ function cost(type) {
  Returns true if the given resource bundle res has more than the resource bundle of cost.
 */
 function afford(res, cost) {
-	for(name in cost) {
-		if(res[name] < cost[name]) return false;
+	for(var thing in cost) {
+		if(res[thing] < cost[thing]) return false;
 	}
 	return true;
 }
@@ -249,14 +248,14 @@ class Player {
 	}
 
 	void getResources(resources) {
-		for(name in resources) {
-			res[name] += resources[name];
+		for(var thing in resources) {
+			res[thing] += resources[thing];
 		}
 	}
 
 	void payResources(cost) {
-		for(name in cost) {
-			res[name] -= cost[name];
+		for(var thing in cost) {
+			res[thing] -= cost[thing];
 		}
 	}
 
@@ -297,12 +296,12 @@ class Player {
 
 	void render() {
 		String resString = name+"\n";
-		for(idx in res) {
+		for(var idx in res) {
 			resString += idx+": "+res[idx]+"\n";
 		}
 		text(resString, 0, 0);
 		String bString = "";
-		for(idx in buildings) {
+		for(var idx in buildings) {
 			bString += idx+": "+buildings[idx]+"\n";
 		}
 		text(bString, 120, 0);
@@ -344,7 +343,7 @@ void draw() {
   text("BUILD Settlement", width/4, height/2);
   text("TRADE", 3*width/4, height/2);
   textAlign(LEFT, TOP);
-  for(idx in players) {
+  for(var idx in players) {
 	players[idx].render();
 	translate(0, 200);
   }
