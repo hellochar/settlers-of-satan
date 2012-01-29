@@ -13,8 +13,8 @@ class Map {
     float distanceFromCenterToEdgeMidpoint;
     Point centerOfGrid;
 
-    public static void main(String[] args) {
-        Map test = new Map();
+    public static Map generate() {
+        return new Map();
     }
 
 
