@@ -13,7 +13,7 @@ header{
 	text-align: center;
 	height: 70px;
 	width: 100%;
-	font-size: 1em;
+	font-size: 1.5em;
 	font-family: Georgia, "Georgia", serif;
 	background: #361016; /* Old browsers */
 background: -moz-linear-gradient(top, #361016 0%, #3f1319 12%, #48161d 25%, #330f14 39%, #1f090c 50%, #000000 51%, #0c0405 60%, #1f090c 76%, #140608 91%, #0e0406 100%); /* FF3.6+ */
@@ -111,27 +111,27 @@ $(document).ready(function(){
   	for (var thing in players) {
   		var player = players[thing];
   		var playerdiv = $("<div></div>");
-  		var sheep = $("<div></div>");
-  		var wheat = $("<div></div>");
-  		var ore = $("<div></div>");
-  		var brick = $("<div></div>");
-  		var wood = $("<div></div>");
+  		var brains = $("<div></div>");
+  		var babies = $("<div></div>");
+  		var kittens = $("<div></div>");
+  		var souls = $("<div></div>");
+  		var hearts = $("<div></div>");
 
   		$("#playerscores").append(playerdiv);
-  		$("#playerscores").append(sheep);
-  		$("#playerscores").append(wheat);
-  		$("#playerscores").append(ore);
-  		$("#playerscores").append(brick);
-  		$("#playerscores").append(wood);
+  		$("#playerscores").append(brains);
+  		$("#playerscores").append(babies);
+  		$("#playerscores").append(kittens);
+  		$("#playerscores").append(souls);
+  		$("#playerscores").append(hearts);
 
   		playerdiv.text( player.name + ":");
-  		sheep.text( "sheep: " + player.res.sheep );
-  		wheat.text( "wheat: " + player.res.wheat);
-  		ore.text( "ore: " + player.res.ore);
-  		brick.text( "brick: " + player.res.brick);
-  		wood.text( "wood: " + player.res.wood);
+  		brains.text( "brains: " + player.res.brains );
+  		babies.text( "babies: " + player.res.babies);
+  		kittens.text( "kittens: " + player.res.kittens);
+  		souls.text( "souls: " + player.res.souls);
+  		hearts.text( "hearts: " + player.res.hearts);
 
-  		/* + players[player].cards.victorypoints + " victory points, " + players[player].cards.knights + " knights, " + players[player].cards.monopolies + " monopolies, " + players[player].cards.yearofplenty + " years of plenty, " + players[player].cards.roadbuilding + " free road building. " + players[player].victorypoints + " victory points.");*/
+  		/* + players[player].cards.victorypoints + " victory points, " + players[player].cards.clerics + " clerics, " + players[player].cards.greed + " demons of greed, " + players[player].cards.epidemic + " epidemics, " + players[player].cards.vampires + " vampire buddies. " + players[player].victorypoints + " victory points.");*/
   	};
   };
 
@@ -164,9 +164,9 @@ function attemptTrade(who, give, get) {
 		"get": get}
 }
 
-function port(port) {
-	return {"name": "port",
-		"port": port};
+function shrine(shrine) {
+	return {"name": "shrine",
+		"shrine": shrine};
 }
 </script>
 </head>
@@ -194,12 +194,12 @@ function build(type) {
 		"type": type};
 }
 
-//Acceptable values are "settlement", "city", "road", "devcard"
+//Acceptable values are "chamber", "cesspool", "trail", "devcard"
 function cost(type) {
-	var costs = {settlement: {wheat:1, sheep:1, brick:1, wood:1},
-		     city: 	 {wheat:2, 			     ore:3},
-		     road:	 {		    brick:1, wood:1},
-		     devcard:	 {wheat:1, sheep:1,		     ore:1}
+	var costs = {chamber: {babies:1, brains:1, souls:1, hearts:1},
+		     cesspool: 	 {babies:2, 			     kittens:3},
+		     trail:	 {		    souls:1, hearts:1},
+		     devcard:	 {babies:1, brains:1,		     kittens:1}
 		    };
 	return costs[type];
 }
@@ -254,9 +254,8 @@ var players = {};
 
 <script type="application/processing">
 class Player {
-	var res = {wheat:10, sheep:10, brick:10, wood:10, ore:10};
-	var buildings = {settlement:0, city:0, road:0};
-	var devcards = {}; //each devcard is one of the following strings: "knight (14)", "yearofplenty", "monopoly", "roadbuilding", "victorypoint (5)"
+	var res = {babies:10, brains:10, souls:10, hearts:10, kittens:10};
+	var buildings = {chamber:0, cesspool:0, trail:0};
 	String name;
 
 	Player(String name) {
@@ -264,10 +263,9 @@ class Player {
 	}
 
 	void points() {
-		return buildings.settlement + buildings.city*2;
+		return buildings.chamber + buildings.cesspool*2;
 	}
-
-	//Acceptable values of btype are "settlement", "road", and "city"
+	//Acceptable values of btype are "chamber", "trail", and "cesspool"
 	void build(btype) {
 		console.log(name+" is building a "+btype+"!");
 		payResources(cost(btype));
@@ -408,7 +406,8 @@ void draw() {
 
   stroke(255);
   textAlign(CENTER, CENTER);
-  text("BUILD Settlement", width/4, height/2);
+  line(width/2, 0, width/2, height);
+  text("BUILD TORTURE CHAMBER", width/4, height/2);
   text("TRADE", 3*width/4, height/2);
   textAlign(LEFT, TOP);
   for(var idx in players) {
@@ -421,7 +420,7 @@ void draw() {
 
 void mouseClicked() {
   if(mouseX < width/2) {
-	  var type = "settlement";
+	  var type = "chamber";
 	  if(afford(me().res, cost(type))) {
 		now.takeAction(build(type));
 	  }
@@ -432,8 +431,8 @@ void mouseClicked() {
 	  	alert("You can't trade with yourself, silly!");
 	  	return;
 	  }
-	  var give = {wheat: 1};
-	  var get = {ore: 1};
+	  var give = {babies: 1};
+	  var get = {kittens: 1};
 	  var trade = attemptTrade(who, give, get);
 	  now.takeAction(trade);
   }
