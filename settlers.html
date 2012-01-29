@@ -3,8 +3,30 @@
 <title>walk</title>
 <style>
 body{
+	padding: 0;
+	margin: 0;
 	background-color: #000;
 	color: #FFF;
+}
+
+header{
+	text-align: center;
+	height: 70px;
+	width: 100%;
+	font-size: 1em;
+	font-family: Georgia, "Georgia", serif;
+	background: #361016; /* Old browsers */
+background: -moz-linear-gradient(top, #361016 0%, #3f1319 12%, #48161d 25%, #330f14 39%, #1f090c 50%, #000000 51%, #0c0405 60%, #1f090c 76%, #140608 91%, #0e0406 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#361016), color-stop(12%,#3f1319), color-stop(25%,#48161d), color-stop(39%,#330f14), color-stop(50%,#1f090c), color-stop(51%,#000000), color-stop(60%,#0c0405), color-stop(76%,#1f090c), color-stop(91%,#140608), color-stop(100%,#0e0406)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, #361016 0%,#3f1319 12%,#48161d 25%,#330f14 39%,#1f090c 50%,#000000 51%,#0c0405 60%,#1f090c 76%,#140608 91%,#0e0406 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, #361016 0%,#3f1319 12%,#48161d 25%,#330f14 39%,#1f090c 50%,#000000 51%,#0c0405 60%,#1f090c 76%,#140608 91%,#0e0406 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, #361016 0%,#3f1319 12%,#48161d 25%,#330f14 39%,#1f090c 50%,#000000 51%,#0c0405 60%,#1f090c 76%,#140608 91%,#0e0406 100%); /* IE10+ */
+background: linear-gradient(top, #361016 0%,#3f1319 12%,#48161d 25%,#330f14 39%,#1f090c 50%,#000000 51%,#0c0405 60%,#1f090c 76%,#140608 91%,#0e0406 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#361016', endColorstr='#0e0406',GradientType=0 ); /* IE6-9 */
+}
+
+header h1{
+	display: inline;
 }
 
 #holder {
@@ -87,9 +109,9 @@ $(document).ready(function(){
   now.updateBlock = function(players){
   	
   	$("#playerscores").empty();
-
   	for (var player in players) {
-  		var playerdiv = $("#playerscores").append($("<div><p></p></div>"));
+  		var playerdiv = $("<div></div>");
+  		$("#playerscores").append(playerdiv);
   		playerdiv.text( players[player].name + ": " + players[player].hand.wool + " wool, " + players[player].hand.grain + " grain, " + players[player].hand.ore + " ore, " + players[player].hand.brick + " brick, " + players[player].hand.lumber + " lumber in hand. " + players[player].cards.victorypoints + " victory points, " + players[player].cards.knights + " knights, " + players[player].cards.monopolies + " monopolies, " + players[player].cards.yearofplenty + " years of plenty, " + players[player].cards.roadbuilding + " free road building. " + players[player].victorypoints + " victory points.");
   	}
   };
@@ -129,6 +151,7 @@ function port(port) {
 </head>
 
 <body>
+<header>The <h1>Settlers</h1> of <h1>Catan</h1></header>
 <div id="chat">
 	<h3>Chat</h3>
 	<div id="msg"></div>
