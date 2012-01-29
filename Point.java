@@ -29,6 +29,10 @@ class Point {
 		return "(".concat(Double.toString(this.x)).concat(", ").concat(Double.toString(this.y)).concat(")");
 	    }
 
+	    public boolean equals(Point other){
+		return (this.x == other.x && this.y == other.y);
+	    }
+
         }
 
 

@@ -13,6 +13,10 @@ class Corner {
 
     public Corner(Point point) {
     }
+
+    public boolean equals(Corner other){
+        return (this.isPort == other.isPort && this.centerPointer.equals(other.centerPoint);
+    }
 }
 
 
