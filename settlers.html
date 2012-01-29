@@ -187,8 +187,8 @@ function setupNow() {
 				break;
 		}
 	}
-	now.setPlayers = function (attrs) {
-		app().resetPlayers(attrs);
+	now.updatePlayer = function (name, attrs) {
+		app().updatePlayer(name, attrs);
 	}
 }
 
@@ -196,10 +196,10 @@ function attributes(p) {
 	var k = {"res": p.res, "buildings": p.buildings, "name": p.name};
 	return k;
 }
+function me() { return players[now.name]; }
 
 callMe("hihihihi");
 var players = {};
-var me;
 
 </script>
 
@@ -234,7 +234,7 @@ class Player {
 	}
 
 	void render() {
-		String resString = this.name+"\n";
+		String resString = name+"\n";
 		for(idx in res) {
 			resString += idx+": "+res[idx]+"\n";
 		}
@@ -248,20 +248,20 @@ class Player {
 }
 
 void loaded() {
-  me = new Player(now.name);
-  console.log("me: ");
-  for(m in me) { console.log(m+": "+me[m]) };
-  now.joinGame(attributes(me));
+  now.broadcastAttributes(attributes(new Player(now.name)));
 }
 
-void resetPlayers(attrs) {
-	console.log("PLAYERS RESET:");
+/**
+ Sets players[name] to have the given attributes; players[name] may be null beforehand.
+*/
+void updatePlayer(name, attrs) {
+	console.log(name+" RESET: ");
 	console.log(attrs);
-	for(p in attrs) {
-		players[p] = new Player(p);
-		$.extend(players[p], attrs[p]);
+	if(!players[name]) {
+		console.log("Newly instantiating "+name+"!");
+		players[name] = new Player(name);
 	}
-	me = players[now.name];
+	$.extend(players[name], attrs);
 }
 
 void setup() {
@@ -272,7 +272,7 @@ void setup() {
 
 void draw() {
   colorMode(HSB);
-  background(millis() / 10f % 255, 255, 255);
+  background(millis() / 10f % 255, 128, 10);
   colorMode(RGB);
   stroke(255);
   textAlign(CENTER, CENTER);
@@ -280,16 +280,17 @@ void draw() {
   textAlign(LEFT, TOP);
   for(idx in players) {
 	players[idx].render();
-//	now.setAttributes(attributes(players[idx]));
 	translate(0, 200);
   }
+  if(me() != null)
+	now.broadcastAttributes(attributes(me()));
 }
 
 void mouseClicked() {
   console.log("mouse clicked!");
   var type = "settlement";
   callMe("clicked");
-  if(afford(me.res, cost(type))) {
+  if(afford(me().res, cost(type))) {
 	now.takeAction(build(type));
   }
 }

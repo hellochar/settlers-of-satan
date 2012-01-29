@@ -6,20 +6,14 @@ server.listen(8080); //listen on port 8080
 
 var nowjs = require("now"); //create "now"
 var everyone = nowjs.initialize(server); //initialize with server
-var allAttributes = {};
 
 everyone.now.takeAction = function(json) {
 	json["owner"] = this.now.name;
 	everyone.now.getAction(json);
 }
 
-everyone.now.setAttributes = function(attr) {
-	allAttributes[this.now.name] = attr;
-}
-
-everyone.now.joinGame = function(attr) {
-	allAttributes[this.now.name] = attr;
-	everyone.now.setPlayers(allAttributes);
+everyone.now.broadcastAttributes = function(attrs) {
+	everyone.now.updatePlayer(this.now.name, attrs);
 }
 
 var players = [{name: "Joey", 
