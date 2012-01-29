@@ -13,11 +13,21 @@ class Map {
     float distanceFromCenterToEdgeMidpoint;
     Point centerOfGrid;
 
+    public static void main(String[] args) {
+        Map test = new Map();
+    }
+
+
     public Map () {
-       calculateHexagon(centerOfGrid); 
+       HashMap hexagonCenterPoints = coordinates.centerCoordinates(); 
+       for (int i = 1; i<=19; i++) {
+            faces.add(this.calculateHexagon((Point)hexagonCenterPoints.get(Integer.toString(i)), i));
+       }
+
     } 
 
-    private void calculateHexagon(Point centerPoint) {
+    private Face calculateHexagon(Point centerPoint, int id) {
+        return new Face(centerPoint, id);
     }
 
     private float calculateEdgeLength(float gridHeight) {
