@@ -16,7 +16,7 @@ class Edge {
     }
 
     public boolean equals(Edge other){
-	
+	return (this.firstPoint.equals(other.firstPoint) && this.midPoint.equals(other.midPoint) && this.lastPoint.equals(other.lastPoint));	
     }
 }
 
