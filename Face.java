@@ -14,17 +14,16 @@ class Face {
 
     public Face(Point centerPoint, int id) {
         center = centerPoint;
-        for(int i = 0; i<=6; i++) {
-            float angle = (float) (2*Math.PI/3);
+        float angle = (float) (2*Math.PI/3);      
+        for(int i = 0; i<5; i++) {
             corners.add(i, new Corner(this.calculateCorner(center, angle)));
-            angle -= (float) (Math.PI/12);
+            angle += (float) (Math.PI/3);
         }
 
-
-        for(int i = 0; i<=6; i++) {
-            float angle = (float) (Math.PI/2);
-            edges.add(i, new Edge(calculateCorner(center, (float) (angle-Math.PI/6)), calculateEdgeMidpoint(center, angle), calculateCorner(center, (float) (angle+Math.PI/6))));
-            angle -= (float) (Math.PI/4);
+        angle = (float) (Math.PI/2);   
+        for(int i = 0; i<5; i++) {
+            edges.add(i, new Edge(this.corners.get(i).centerPoint, calculateEdgeMidpoint(center, angle), this.corners.get(i + 1).centerPoint));
+            angle += (float) (Math.PI/3);
         }
 
     }

@@ -111,8 +111,27 @@ $(document).ready(function(){
   	for (var thing in players) {
   		var player = players[thing];
   		var playerdiv = $("<div></div>");
+  		var sheep = $("<div></div>");
+  		var wheat = $("<div></div>");
+  		var ore = $("<div></div>");
+  		var brick = $("<div></div>");
+  		var wood = $("<div></div>");
+
   		$("#playerscores").append(playerdiv);
-  		playerdiv.text( player.name + ": " + player.res.sheep + " sheep, " + player.res.wheat + " wheat, " + player.res.ore + " ore, " + player.res.brick + " brick, " + player.res.wood + " wood in hand. ");/* + players[player].cards.victorypoints + " victory points, " + players[player].cards.knights + " knights, " + players[player].cards.monopolies + " monopolies, " + players[player].cards.yearofplenty + " years of plenty, " + players[player].cards.roadbuilding + " free road building. " + players[player].victorypoints + " victory points.");*/
+  		$("#playerscores").append(sheep);
+  		$("#playerscores").append(wheat);
+  		$("#playerscores").append(ore);
+  		$("#playerscores").append(brick);
+  		$("#playerscores").append(wood);
+
+  		playerdiv.text( player.name + ":");
+  		sheep.text( "sheep: " + player.res.sheep );
+  		wheat.text( "wheat: " + player.res.wheat);
+  		ore.text( "ore: " + player.res.ore);
+  		brick.text( "brick: " + player.res.brick);
+  		wood.text( "wood: " + player.res.wood);
+
+  		/* + players[player].cards.victorypoints + " victory points, " + players[player].cards.knights + " knights, " + players[player].cards.monopolies + " monopolies, " + players[player].cards.yearofplenty + " years of plenty, " + players[player].cards.roadbuilding + " free road building. " + players[player].victorypoints + " victory points.");*/
   	};
   };
 
@@ -275,6 +294,7 @@ class Player {
 	void makeTrade(trade) {
 		console.log("making trade: ");
 		console.log(trade);
+		console.log("Caller: " + arguments.callee.caller.name);
 		if(trade.who == now.name) {
 			tradeRecieve(trade);
 		} else if(trade.owner == now.name) {
@@ -284,6 +304,7 @@ class Player {
 
 	// Handles trade requests where you're on the "recieving" end (e.g. you are the target of a trade).
 	void tradeRecieve(trade) {
+		console.log("trade being received! " + arguments.callee.caller.name);
 		if(!trade.doIt) { //you just got the request
 			var doIt = prompt("Make trade?");
 			if(doIt != 'yes') doIt = 'no';
@@ -296,6 +317,7 @@ class Player {
 
 	//Handles trade requests where you're on the giving end (e.g. you are the initiator of a trade).
 	void tradeGive(trade) {
+		console.log("trade being given! " + arguments.callee.caller.name);
 		if(trade.doIt == 'yes') {
 			payResources(trade.give);
 			getResources(trade.get);
@@ -406,6 +428,10 @@ void mouseClicked() {
   } else {
 	  var who = prompt("Who do you want to trade with?");
 	  if(!players[who]) alert(who+" isn't a player!");
+	  if(players[who].name == me().name){
+	  	alert("You can't trade with yourself, silly!");
+	  	return;
+	  }
 	  var give = {wheat: 1};
 	  var get = {ore: 1};
 	  var trade = attemptTrade(who, give, get);

@@ -8,10 +8,10 @@ var nowjs = require("now"); //create "now"
 var everyone = nowjs.initialize(server); //initialize with server
 var players = {}
 
-everyone.now.takeAction = function(json, retainOwner) {
+everyone.now.takeAction = function(json) {
 	if(!json["owner"])
 		json["owner"] = this.now.name;
-
+		console.log("takeAction", arguments);
 	everyone.now.getAction(json);
 }
 

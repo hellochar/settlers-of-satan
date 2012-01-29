@@ -12,10 +12,11 @@ class Corner {
     Point centerPoint;
 
     public Corner(Point point) {
+        centerPoint = point;
     }
 
     public boolean equals(Corner other){
-        return (this.centerPointer.equals(other.centerPoint);
+        return (this.centerPoint.equals(other.centerPoint));
     }
 }
 
