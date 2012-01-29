@@ -22,14 +22,35 @@ everyone.now.joinGame = function(attr) {
 	everyone.now.setPlayers(allAttributes);
 }
 
-everyone.now.mousePressed = function(mousePressed, mouseButton, key, keyCode) { //begin charging
-	var p = players[this.now.name];
-	p.charging = 5;
-}
+var players = [{name: "Joey", 
+				hand: {	ore: 0,
+						brick: 0,
+						lumber: 0,
+						wool: 1, 
+						grain: 2}, 
+				cards: {victorypoints: 1,
+						knights: 0,
+						monopolies: 0,
+						yearofplenty: 0,
+						roadbuilding: 0},
+				victorypoints: 4},
+				{name: "Amy",
+				hand: {ore: 2,
+						brick: 2,
+						lumber: 0,
+						wool: 0,
+						grain: 0},
+				cards: {victorypoints: 0,
+						knights: 0,
+						monopolies: 1,
+						yearofplenty: 0,
+						roadbuilding: 0},
+				victorypoints: 5}]
 
-everyone.now.mouseReleased = function(mousePressed, mouseButton, key, keyCode) { //begin charging
-	var p = players[this.now.name];
-	//shot the web
-	add(new EShot(p, inputs[this.now.name].mouse.x, inputs[this.now.name].mouse.y, p.charging));
-	delete p.charging;
-}
+nowjs.on('connect', function(){
+	this.now.updateBlock(players);
+});
+
+everyone.now.distributeMessage = function(msg){
+	everyone.now.receiveMessage(this.now.name, msg);	
+};
