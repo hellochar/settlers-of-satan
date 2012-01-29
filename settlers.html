@@ -136,7 +136,9 @@ $(document).ready(function(){
 function app() { return Processing.instances[0]; }
 
 
+
 function attemptTrade(who, give, get) {
+	//Trade is of the form {name: "trade", (optionally doIt:"no"/"yes"), who: "zxcv", give: <resbundle>, get: <resbundle>}
 	return {"name": "trade",
 		"who": who,
 		"give": give,
@@ -173,12 +175,6 @@ function build(type) {
 		"type": type};
 }
 
-//Mutates res by subtracting cost[resource] from each resource
-function pay(res, cost) {
-	for(name in cost) {
-		res[name] -= cost[name];
-	}
-}
 //Acceptable values are "settlement", "city", "road", "devcard"
 function cost(type) {
 	var costs = {settlement: {wheat:1, sheep:1, brick:1, wood:1},
@@ -204,9 +200,17 @@ function setupNow() {
 		console.log("getAction called with ");
 		console.log(json);
 		switch(json["name"]) {
-			case "build":
+			case "build": //Someone (not necessarily you) is building something.
 				console.log("-----building!------");
 				players[json.owner].build(json.type);
+				break;
+			case "buy": //Someone (not necessarily you) is buying something.
+				break;
+			case "trade": //Someone is trading.
+				players[json.owner].makeTrade(json);
+				players[json.who].makeTrade(json);
+				break;
+			case "devcard": //Someone is playing a devcard
 				break;
 		}
 	}
@@ -227,9 +231,8 @@ var players = {};
 </script>
 
 <script type="application/processing">
-callMe("start of processing");
 class Player {
-	var res = {wheat:10, sheep:5, brick:5, wood:9, ore:5};
+	var res = {wheat:10, sheep:10, brick:10, wood:10, ore:10};
 	var buildings = {settlement:0, city:0, road:0};
 	String name;
 
@@ -240,20 +243,52 @@ class Player {
 	//Acceptable values of btype are "settlement", "road", and "city"
 	void build(btype) {
 		console.log(name+" is building a "+btype+"!");
-		pay(res, cost(btype));
+		payResources(cost(btype));
 		buildings[btype]++;
 	}
 
-	//Res is a resource bundle
 	void getResources(resources) {
 		for(name in resources) {
 			res[name] += resources[name];
 		}
 	}
 
+	void payResources(cost) {
+		for(name in cost) {
+			res[name] -= cost[name];
+		}
+	}
 
-	void trade(player) {
-		
+
+	// Trade is of the form {name: "trade", (optionally doIt:"no"/"yes"), who: "zxcv", give: <resbundle>, get: <resbundle>}
+	void makeTrade(trade) {
+		if(trade.who == me().name) {
+			tradeRecieve(trade);
+		} else if(trade.owner == me().name) {
+			tradeGive(trade);
+		}
+	}
+
+	// Handles trade requests where you're on the recieving end.
+	void tradeRecieve(trade) {
+		if(!trade.doIt) { //you just got the request
+			var doIt = prompt("Make trade?");
+			if(doIt != 'yes') doIt = 'no';
+			now.takeAction($.extend(trade, {"doIt": doIt}));
+		} else if(trade.doIt == 'yes') { //you just accepted
+			payResources(trade.get);
+			getResources(trade.give);
+		}
+	}
+
+	void tradeGive(trade) {
+		if(trade.doIt == 'yes') {
+			payResources(trade.give);
+			getResources(trade.get);
+		}
+		else if(trade.doIt == 'no') {
+			alert(trade.who+" cancelled the trade.");
+		}
 	}
 
 	void render() {
@@ -278,18 +313,19 @@ void loaded() {
  Sets players[name] to have the given attributes; players[name] may be null beforehand.
 */
 void updatePlayer(name, attrs) {
-	console.log(name+" RESET: ");
-	console.log(attrs);
 	if(!players[name]) {
 		console.log("Newly instantiating "+name+"!");
 		players[name] = new Player(name);
 	}
+//	console.log("attrs: ");
+//	for(n in attrs) console.log("\t"+n+": "+attrs[n]);
 	$.extend(players[name], attrs);
 }
 
 void setup() {
   console.log("Processing setup!");
   size(800, 600);
+  frameRate(3);
   noLoop();
 }
 
@@ -299,7 +335,9 @@ void draw() {
   colorMode(RGB);
   stroke(255);
   textAlign(CENTER, CENTER);
-  text("BUILD Settlement", width/2, height/2);
+  line(width/2, 0, width/2, height);
+  text("BUILD Settlement", width/4, height/2);
+  text("TRADE", 3*width/4, height/2);
   textAlign(LEFT, TOP);
   for(idx in players) {
 	players[idx].render();
@@ -310,11 +348,18 @@ void draw() {
 }
 
 void mouseClicked() {
-  console.log("mouse clicked!");
-  var type = "settlement";
-  callMe("clicked");
-  if(afford(me().res, cost(type))) {
-	now.takeAction(build(type));
+  if(mouseX < width/2) {
+	  var type = "settlement";
+	  if(afford(me().res, cost(type))) {
+		now.takeAction(build(type));
+	  }
+  } else {
+	  var who = prompt("Who do you want to trade with?");
+	  if(!players[who]) alert(who+" isn't a player!");
+	  var give = {wheat: 1};
+	  var get = {ore: 1};
+	  var trade = attemptTrade(who, give, get);
+	  now.takeAction(trade);
   }
 }
 
