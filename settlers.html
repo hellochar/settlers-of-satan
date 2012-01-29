@@ -263,6 +263,8 @@ class Player {
 
 	// Trade is of the form {name: "trade", (optionally doIt:"no"/"yes"), who: "zxcv", give: <resbundle>, get: <resbundle>}
 	void makeTrade(trade) {
+		console.log("making trade: ");
+		console.log(trade);
 		if(trade.who == me().name) {
 			tradeRecieve(trade);
 		} else if(trade.owner == me().name) {
@@ -270,7 +272,7 @@ class Player {
 		}
 	}
 
-	// Handles trade requests where you're on the recieving end.
+	// Handles trade requests where you're on the "recieving" end (e.g. you are the target of a trade).
 	void tradeRecieve(trade) {
 		if(!trade.doIt) { //you just got the request
 			var doIt = prompt("Make trade?");
@@ -282,6 +284,7 @@ class Player {
 		}
 	}
 
+	//Handles trade requests where you're on the giving end (e.g. you are the initiator of a trade).
 	void tradeGive(trade) {
 		if(trade.doIt == 'yes') {
 			payResources(trade.give);
