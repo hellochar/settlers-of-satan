@@ -2,16 +2,62 @@
 <head>
 <title>walk</title>
 <style>
+body{
+	background-color: #000;
+	color: #FFF;
+}
+
 #holder {
 	width: 800px;
 	height: 600px;
 	margin: 0px auto;
 }
+#playerscores{
+	float: left;
+	width: 200px;
+	height: 100%;
+	margin: 20px auto;
+}
+#chat{
+	font: Georgia, Helvetica, serif;
+	float: right;
+	padding: 10px;
+	border: 1px solid #999;
+	width: 200px;
+	height: 80%;
+	border-radius: 5px;
+}
+
+#chat > h3 {
+	border-bottom: 1px solid #999;
+}
+
+#msg{
+	margin-top:10%;
+	height: 80%;
+	margin-bottom: 10%
+	overflow: scroll;
+	overflow-x: hidden;
+	word-wrap: break-word;
+	scrollbar-base-color:       #CCCCCC;
+	scrollbar-arrow-color:      #000000;
+	scrollbar-track-color:      #999999;
+	scrollbar-3dlight-color:    #EEEEEE;
+	scrollbar-highlight-color:  #FFFFFF;
+	scrollbar-face-color:       #CCCCCC;
+	scrollbar-shadow-color:     #999999;
+	scrollbar-darkshadow-color: #666666;
+}
+
+#chatfooter{
+	position: absolute
+	bottom: 0px;
+	right: 0px;
+}
 </style>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 <script src="http://cloud.github.com/downloads/processing-js/processing-js/processing-1.3.6.min.js"></script>
 <script src="/nowjs/now.js"></script>
-<script src="http://documentcloud.github.com/backbone/backbone.js"></script>
 
 <script>
 function disableDraggingFor(element) {
@@ -32,19 +78,52 @@ $(document).ready(function(){
 
   now.ready(function() {
 	console.log("now is ready!");
-	now.create();
 //	keys = mkl(window);
 //	setInterval("now.syncWorld()", 16);
 	ready = true;
 	Processing.instances[0].loop();
   });
 
-});
+  now.updateBlock = function(players){
+  	
+  	$("#playerscores").empty();
+
+  	for (var player in players) {
+  		var playerdiv = $("#playerscores").append($("<div><p></p></div>"));
+  		playerdiv.text( players[player].name + ": " + players[player].hand.wool + " wool, " + players[player].hand.grain + " grain, " + players[player].hand.ore + " ore, " + players[player].hand.brick + " brick, " + players[player].hand.lumber + " lumber in hand. " + players[player].cards.victorypoints + " victory points, " + players[player].cards.knights + " knights, " + players[player].cards.monopolies + " monopolies, " + players[player].cards.yearofplenty + " years of plenty, " + players[player].cards.roadbuilding + " free road building. " + players[player].victorypoints + " victory points.");
+  	}
+  };
+
+  	now.receiveMessage = function(name, msg){
+  	$("<div></div>").text(name + ": " + msg).appendTo("#msg");
+  	$("#msg").animate({ scrollTop: $("#msg").attr("scrollHeight") }, 3000);
+  	};
+
+  	$("#send-button").click(function(){
+  	now.distributeMessage($("#text-input").val());
+  	$("#text-input").val("");
+  	});
+
+  	$("#text-input").keyup(function(event){
+  	  if(event.keyCode == 13){
+  	    $("#send-button").click();
+  	  }
+  	});
+});	
 
 </script>
 </head>
 
 <body>
+	<div id="chat">
+		<h3>Chat</h3>
+		<div id="msg"></div>
+		<div id="chatfooter">
+			<input type="text" id="text-input">
+			<input type="button" value="Send" id="send-button">
+		</div>
+	</div>
+	<div id="playerscores"></div>
 	<div id="holder">
 	<script type="application/processing">
 
