@@ -107,7 +107,7 @@ $(document).ready(function(){
   });
 
   now.updateBlock = function(players){
-  	console.log(players);
+//  	console.log(players);
   	$("#playerscores").empty();
   	for (var name in players) {
   		var player = players[name];
@@ -198,8 +198,8 @@ function afford(res, cost) {
 function setupNow() {
 	console.log("setupNow()!");
 	now.getAction = function (json) {
-		console.log("getAction called with ");
-		console.log(json);
+//		console.log("getAction called with ");
+//		console.log(json);
 		switch(json["name"]) {
 			case "build": //Someone (not necessarily you) is building something.
 				console.log("-----building!------");
@@ -249,25 +249,28 @@ class Player {
 	}
 
 	void getResources(resources) {
+		console.log(now.name+": got resources: ");
+		for(r in resources) console.log("\t"+r+": "+resources[r]);
 		for(name in resources) {
 			res[name] += resources[name];
 		}
 	}
 
 	void payResources(cost) {
+		console.log(now.name+": paid resources: ");
+		for(r in cost) console.log("\t"+r+": "+cost[r]);
 		for(name in cost) {
 			res[name] -= cost[name];
 		}
 	}
 
-
 	// Trade is of the form {name: "trade", (optionally doIt:"no"/"yes"), who: "zxcv", give: <resbundle>, get: <resbundle>}
 	void makeTrade(trade) {
 		console.log("making trade: ");
 		console.log(trade);
-		if(trade.who == me().name) {
+		if(trade.who == now.name) {
 			tradeRecieve(trade);
-		} else if(trade.owner == me().name) {
+		} else if(trade.owner == now.name) {
 			tradeGive(trade);
 		}
 	}
@@ -338,6 +341,12 @@ void draw() {
   colorMode(HSB);
   background(millis() / 10f % 255, 128, 10);
   colorMode(RGB);
+
+  textAlign(CENTER, TOP);
+  textSize(20);
+  text(now.name, width/2, 10);
+  textSize(12);
+
   stroke(255);
   textAlign(CENTER, CENTER);
   line(width/2, 0, width/2, height);

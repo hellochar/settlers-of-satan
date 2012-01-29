@@ -7,8 +7,10 @@ server.listen(8080); //listen on port 8080
 var nowjs = require("now"); //create "now"
 var everyone = nowjs.initialize(server); //initialize with server
 
-everyone.now.takeAction = function(json) {
-	json["owner"] = this.now.name;
+everyone.now.takeAction = function(json, retainOwner) {
+	if(!json["owner"])
+		json["owner"] = this.now.name;
+
 	everyone.now.getAction(json);
 }
 
