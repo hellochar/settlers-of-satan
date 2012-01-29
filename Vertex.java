@@ -1,7 +1,8 @@
 // Vertex class for Settlers of Satan map
 
-Vertex {
+class Vertex {
     int id;
-    ArrayList edges;
-    ArrayList vertices;
+    ArrayList<Edge> edges; // ArrayList of edges 
+    ArrayList<Face> faces; //ArrayList of faces
+    bool isPort;
     HashMap graphicsInfo; 

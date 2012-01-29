@@ -3,7 +3,7 @@
 import java.util.HashMap
 import java.util.ArrayList
 
-Face {
+class Face {
     int id; // Reference id for the face 
     Resource res; // Resources associated with the tile
     ArrayList edges; //ArrayList of edges associated with the face
