@@ -1,6 +1,6 @@
 //Point class for representing points on the map
 
-class Point {
+public class Point {
 
             float x;
             float y;

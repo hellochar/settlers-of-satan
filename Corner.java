@@ -15,7 +15,7 @@ class Corner {
     }
 
     public boolean equals(Corner other){
-        return (this.centerPointer.equals(other.centerPoint);
+        return (this.centerPoint.equals(other.centerPoint));
     }
 }
 
