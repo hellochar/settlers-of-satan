@@ -107,13 +107,14 @@ $(document).ready(function(){
   });
 
   now.updateBlock = function(players){
-  	
+  	console.log(players);
   	$("#playerscores").empty();
-  	for (var player in players) {
+  	for (var name in players) {
+  		var player = players[name];
   		var playerdiv = $("<div></div>");
   		$("#playerscores").append(playerdiv);
-  		playerdiv.text( players[player].name + ": " + players[player].hand.wool + " wool, " + players[player].hand.grain + " grain, " + players[player].hand.ore + " ore, " + players[player].hand.brick + " brick, " + players[player].hand.lumber + " lumber in hand. " + players[player].cards.victorypoints + " victory points, " + players[player].cards.knights + " knights, " + players[player].cards.monopolies + " monopolies, " + players[player].cards.yearofplenty + " years of plenty, " + players[player].cards.roadbuilding + " free road building. " + players[player].victorypoints + " victory points.");
-  	}
+  		playerdiv.text( player.name + ": " + player.res.sheep + " sheep, " + player.res.wheat + " wheat, " + player.res.ore + " ore, " + player.res.brick + " brick, " + player.res.wood + " wood in hand. ");/* + players[player].cards.victorypoints + " victory points, " + players[player].cards.knights + " knights, " + players[player].cards.monopolies + " monopolies, " + players[player].cards.yearofplenty + " years of plenty, " + players[player].cards.roadbuilding + " free road building. " + players[player].victorypoints + " victory points.");*/
+  	};
   };
 
   	now.receiveMessage = function(name, msg){
@@ -267,6 +268,7 @@ class Player {
 			bString += idx+": "+buildings[idx]+"\n";
 		}
 		text(bString, 120, 0);
+		now.updateBlock(players);
 	}
 }
 
