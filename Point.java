@@ -4,12 +4,10 @@ class Point {
     float x;
     float y;
 
-    public Point(float x-value, float y-value) {
-        this.x = x-value;
-        this.y = y-value;
+    public Point(float xvalue, float yvalue) {
+        this.x = xvalue;
+        this.y = yvalue;
     }
-    
-    public static Point (Point point1, Point point2) {
-        return Point(point1.x + point2.y, point1.y + point2.y);
-    }
+}
+
 

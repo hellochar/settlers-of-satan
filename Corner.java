@@ -1,12 +1,18 @@
 // Vertex class for Settlers of Satan map
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 class Corner {
     int id;
     ArrayList<Edge> edges; // ArrayList of edges 
     ArrayList<Face> faces; //ArrayList of faces
-    bool isPort;
+    boolean isPort;
     HashMap graphicsInfo; 
+    Point centerPoint;
 
-    public Corner(int id) {
+    public Corner(Point point) {
     }
+}
+
 
