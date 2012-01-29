@@ -226,8 +226,10 @@ function setupNow() {
 			case "buy": //Someone (not necessarily you) is buying something.
 				break;
 			case "trade": //Someone is trading.
-				players[json.owner].makeTrade(json);
-				players[json.who].makeTrade(json);
+				if(now.name == json.owner)
+					players[json.owner].tradeGive(json);
+				else if(now.name == json.who)
+					players[json.who].tradeRecieve(json);
 				break;
 			case "devcard": //Someone is playing a devcard
 				break;
@@ -286,6 +288,7 @@ class Player {
 	void makeTrade(trade) {
 		console.log("making trade: ");
 		console.log(trade);
+		console.log("Caller: " + arguments.callee.caller.name);
 		if(trade.who == now.name) {
 			tradeRecieve(trade);
 		} else if(trade.owner == now.name) {
@@ -295,6 +298,7 @@ class Player {
 
 	// Handles trade requests where you're on the "recieving" end (e.g. you are the target of a trade).
 	void tradeRecieve(trade) {
+		console.log("trade being received! " + arguments.callee.caller.name);
 		if(!trade.doIt) { //you just got the request
 			var doIt = prompt("Make trade?");
 			if(doIt != 'yes') doIt = 'no';
@@ -307,6 +311,7 @@ class Player {
 
 	//Handles trade requests where you're on the giving end (e.g. you are the initiator of a trade).
 	void tradeGive(trade) {
+		console.log("trade being given! " + arguments.callee.caller.name);
 		if(trade.doIt == 'yes') {
 			payResources(trade.give);
 			getResources(trade.get);
@@ -388,6 +393,10 @@ void mouseClicked() {
   } else {
 	  var who = prompt("Who do you want to trade with?");
 	  if(!players[who]) alert(who+" isn't a player!");
+	  if(players[who].name == me().name){
+	  	alert("You can't trade with yourself, silly!");
+	  	return;
+	  }
 	  var give = {wheat: 1};
 	  var get = {ore: 1};
 	  var trade = attemptTrade(who, give, get);
