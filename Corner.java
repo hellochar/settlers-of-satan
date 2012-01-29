@@ -6,3 +6,7 @@ class Corner {
     ArrayList<Face> faces; //ArrayList of faces
     bool isPort;
     HashMap graphicsInfo; 
+
+    public Corner(int id) {
+    }
+

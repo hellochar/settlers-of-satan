@@ -8,5 +8,8 @@ class Point {
         this.x = x-value;
         this.y = y-value;
     }
-
+    
+    public static Point (Point point1, Point point2) {
+        return Point(point1.x + point2.y, point1.y + point2.y);
+    }
 
