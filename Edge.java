@@ -13,6 +13,9 @@ class Edge {
     Point lastPoint;
 
     public Edge(Point fPoint, Point mPoint, Point lPoint){
+        firstPoint = fPoint;
+        midPoint = mPoint;
+        lastPoint = lPoint;
     }
 
     public boolean equals(Edge other){

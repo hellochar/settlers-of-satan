@@ -14,16 +14,19 @@ class Map {
     Point centerOfGrid;
 
     public static void main(String[] args) {
+        Map test = new Map();
+        
         
     }
 
 
     public Map () {
        HashMap hexagonCenterPoints = coordinates.centerCoordinates(); 
-       faces.add(this.calculateHexagon(Point((float)0, (float)0),0 ));
+       faces.add(this.calculateHexagon(new Point(0.0f, 0.0f),0 ));
        for (int i = 1; i<=19; i++) {
             faces.add(this.calculateHexagon((Point)hexagonCenterPoints.get(Integer.toString(i)), i));
        }
+       System.out.println(hexagonCenterPoints);
 
     } 
 

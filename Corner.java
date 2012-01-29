@@ -12,6 +12,7 @@ class Corner {
     Point centerPoint;
 
     public Corner(Point point) {
+        centerPoint = point
     }
 
     public boolean equals(Corner other){
