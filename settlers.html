@@ -204,13 +204,16 @@ function setupNow() {
 				console.log("-----building!------");
 				players[json.owner].build(json.type);
 				break;
-			case "buy": //Someone (not necessarily you) is buying something.
+			case "buy": //Someone (not necessarily you) is buying something. This can be a build, or a devcard.
 				break;
 			case "trade": //Someone is trading.
-				players[json.owner].makeTrade(json);
-				players[json.who].makeTrade(json);
+				if(now.name == json.owner)
+					players[json.owner].tradeGive(json);
+				else if(now.name == json.who)
+					players[json.who].tradeRecieve(json);
 				break;
 			case "devcard": //Someone is playing a devcard
+				players[json.owner].playDevcard(json);
 				break;
 		}
 	}
@@ -234,6 +237,7 @@ var players = {};
 class Player {
 	var res = {wheat:10, sheep:10, brick:10, wood:10, ore:10};
 	var buildings = {settlement:0, city:0, road:0};
+	var devcards = {}; //each devcard is one of the following strings: "knight (14)", "yearofplenty", "monopoly", "roadbuilding", "victorypoint (5)"
 	String name;
 
 	Player(String name) {
@@ -315,6 +319,29 @@ class Player {
 void loaded() {
   now.broadcastAttributes(attributes(new Player(now.name)));
 }
+
+void showSelectPrompt(num, string, filter) {
+	if((typeof filter) == 'undefined') {
+		filter = function (x) { return true; }
+	}
+	alert("Please select "+n+" cards "+string+"!");
+}
+
+void discardHalf() {
+	for(var playerName in players) {
+		var player = players[playerName];
+		var cardCount = 0;
+		for(var resName in player.res) cardCount += player.res[resName];
+		if(cardCount > 7) {
+			showDiscardPrompt(Math.floor(cardCount/2));
+		}
+	}
+}
+
+void showDiscardPrompt(num) {
+	alert("Discarding "+num+" cards");
+}
+
 
 /**
  Sets players[name] to have the given attributes; players[name] may be null beforehand.
