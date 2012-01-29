@@ -24,41 +24,199 @@ function disableDraggingFor(element) {
 }
 
 $(document).ready(function(){
-	disableDraggingFor($("#holder"));
+  disableDraggingFor($("#holder"));
   //I have a local "now" variable that holds both information about this current instance and holds the server's instance. 'now.name' refers to THIS INSTANCE's name. Some of the fields in 'now' are local to me, while some of them are actually located in the server. The abstraction that now provides is to gloss over that previous fact, so you can write code that refers to the server with the same syntax as a local field.
 
   now.name = prompt("What's your name?", "");
 
   now.ready(function() {
 	console.log("now is ready!");
-	now.create();
-//	keys = mkl(window);
-//	setInterval("now.syncWorld()", 16);
 	ready = true;
-	Processing.instances[0].loop();
+	setupNow();
+	app().loop();
+	app().loaded();
   });
 
 });
 
+function app() { return Processing.instances[0]; }
+
+
+function attemptTrade(who, give, get) {
+	return {"name": "trade",
+		"who": who,
+		"give": give,
+		"get": get}
+}
+
+function port(port) {
+	return {"name": "port",
+		"port": port};
+}
 </script>
 </head>
 
 <body>
-	<div id="holder">
-	<script type="application/processing">
+<div id="holder">
 
-void setup()
-{
-  size(800, 600);
+<script>
+function callMe(str) {
+	console.log("called me! "+str);
+}
+
+
+function build(type) {
+	return {"name": "build",
+		"type": type};
+}
+
+//Mutates res by subtracting cost[resource] from each resource
+function pay(res, cost) {
+	for(name in cost) {
+		res[name] -= cost[name];
+	}
+}
+//Acceptable values are "settlement", "city", "road", "devcard"
+function cost(type) {
+	var costs = {settlement: {wheat:1, sheep:1, brick:1, wood:1},
+		     city: 	 {wheat:2, 			     ore:3},
+		     road:	 {		    brick:1, wood:1},
+		     devcard:	 {wheat:1, sheep:1,		     ore:1}
+		    };
+	return costs[type];
+}
+/**
+ Returns true if the given resource bundle res has more than the resource bundle of cost.
+*/
+function afford(res, cost) {
+	for(name in cost) {
+		if(res[name] < cost[name]) return false;
+	}
+	return true;
+}
+
+function setupNow() {
+	console.log("setupNow()!");
+	now.getAction = function (json) {
+		console.log("getAction called with ");
+		console.log(json);
+		switch(json["name"]) {
+			case "build":
+				console.log("-----building!------");
+				players[json.owner].build(json.type);
+				break;
+		}
+	}
+	now.setPlayers = function (attrs) {
+		app().resetPlayers(attrs);
+	}
+}
+
+function attributes(p) {
+	var k = {"res": p.res, "buildings": p.buildings, "name": p.name};
+	return k;
+}
+
+callMe("hihihihi");
+var players = {};
+var me;
+
+</script>
+
+<script type="application/processing">
+callMe("start of processing");
+class Player {
+	var res = {wheat:10, sheep:5, brick:5, wood:9, ore:5};
+	var buildings = {settlement:0, city:0, road:0};
+	String name;
+
+	Player(String name) {
+		this.name = name;
+	}
+
+	//Acceptable values of btype are "settlement", "road", and "city"
+	void build(btype) {
+		console.log(name+" is building a "+btype+"!");
+		pay(res, cost(btype));
+		buildings[btype]++;
+	}
+
+	//Res is a resource bundle
+	void getResources(resources) {
+		for(name in resources) {
+			res[name] += resources[name];
+		}
+	}
+
+
+	void trade(player) {
+		
+	}
+
+	void render() {
+		String resString = this.name+"\n";
+		for(idx in res) {
+			resString += idx+": "+res[idx]+"\n";
+		}
+		text(resString, 0, 0);
+		String bString = "";
+		for(idx in buildings) {
+			bString += idx+": "+buildings[idx]+"\n";
+		}
+		text(bString, 120, 0);
+	}
+}
+
+void loaded() {
+  me = new Player(now.name);
+  console.log("me: ");
+  for(m in me) { console.log(m+": "+me[m]) };
+  now.joinGame(attributes(me));
+}
+
+void resetPlayers(attrs) {
+	console.log("PLAYERS RESET:");
+	console.log(attrs);
+	for(p in attrs) {
+		players[p] = new Player(p);
+		$.extend(players[p], attrs[p]);
+	}
+	me = players[now.name];
+}
+
+void setup() {
   console.log("Processing setup!");
+  size(800, 600);
   noLoop();
 }
 
 void draw() {
-	background(millis() / 100.0);
+  colorMode(HSB);
+  background(millis() / 10f % 255, 255, 255);
+  colorMode(RGB);
+  stroke(255);
+  textAlign(CENTER, CENTER);
+  text("BUILD Settlement", width/2, height/2);
+  textAlign(LEFT, TOP);
+  for(idx in players) {
+	players[idx].render();
+//	now.setAttributes(attributes(players[idx]));
+	translate(0, 200);
+  }
 }
-	</script>
-	<canvas id="canvas" style="border:5px solid black;"></canvas>
-	</div>
+
+void mouseClicked() {
+  console.log("mouse clicked!");
+  var type = "settlement";
+  callMe("clicked");
+  if(afford(me.res, cost(type))) {
+	now.takeAction(build(type));
+  }
+}
+
+</script>
+<canvas id="canvas" style="border:5px solid black;"></canvas>
+</div>
+
 </body>
 </html>
